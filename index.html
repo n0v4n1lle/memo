@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mémorial — Léo</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:         #0c0808;
+    --bg-green:   #0a110c;
+    --cherry:     #8b1a2a;
+    --cherry-s:   rgba(139,26,42,0.13);
+    --royal:      #1e3d8b;
+    --royal-s:    rgba(30,61,139,0.13);
+    --forest:     #1e4a2e;
+    --forest-s:   rgba(30,74,46,0.13);
+    --ivory:      #e8ddd0;
+    --ivory-mid:  rgba(232,221,208,0.55);
+    --ivory-low:  rgba(232,221,208,0.16);
+    --ivory-ghost:rgba(232,221,208,0.06);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    color: var(--ivory);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 300;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 48px;
+    background: rgba(12,8,8,0.88);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--ivory-ghost);
+  }
+  .nav-name { font-family:'Cormorant Garamond',serif; font-size:1.1rem; letter-spacing:.08em; }
+  .nav-pill {
+    font-size:10px; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--ivory-mid); border:1px solid var(--ivory-low);
+    padding:5px 14px; border-radius:99px;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 0 48px 80px;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content:''; position:absolute; inset:0;
+    background:
+      radial-gradient(ellipse 60% 50% at 15% 30%, rgba(139,26,42,0.22) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 60% at 80% 20%, rgba(30,61,139,0.18) 0%, transparent 65%),
+      radial-gradient(ellipse 40% 40% at 55% 75%, rgba(30,74,46,0.15) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .hero-rule {
+    position:absolute; top:50%; left:0; right:0; height:1px;
+    background:linear-gradient(90deg,transparent,var(--cherry) 20%,var(--royal) 50%,var(--forest) 80%,transparent);
+    opacity:.3;
+  }
+  .hero-eyebrow { font-size:10px; letter-spacing:.35em; text-transform:uppercase; color:var(--cherry); margin-bottom:28px; position:relative; }
+  .hero h1 {
+    font-family:'Cormorant Garamond',serif; font-size:clamp(3.5rem,10vw,8rem);
+    font-weight:300; line-height:.95; margin-bottom:40px; position:relative;
+  }
+  .hero h1 em { font-style:italic; color:var(--ivory-mid); }
+  .hero-meta { display:flex; align-items:center; gap:24px; position:relative; flex-wrap:wrap; }
+  .hero-meta-item { font-size:11px; letter-spacing:.12em; color:var(--ivory-mid); text-transform:uppercase; }
+  .hero-meta-dot { width:4px; height:4px; border-radius:50%; background:var(--cherry); opacity:.6; }
+  .scroll-hint {
+    position:absolute; bottom:32px; right:48px;
+    font-size:10px; letter-spacing:.2em; color:var(--ivory-low); text-transform:uppercase; writing-mode:vertical-rl;
+  }
+
+  /* ── LETTER ── */
+  .letter { max-width: 780px; margin: 0 auto; padding: 100px 48px 80px; }
+
+  .letter-intro {
+    font-family:'Cormorant Garamond',serif; font-size:1.2rem; font-style:italic;
+    color:var(--ivory-mid); margin-bottom:72px; padding-bottom:40px;
+    border-bottom:1px solid var(--ivory-ghost); line-height:1.8;
+  }
+
+  /* Part block */
+  .part { margin-bottom: 80px; position: relative; }
+
+  .part-header {
+    display: flex; align-items: center; gap: 16px; margin-bottom: 28px;
+  }
+
+  .part-stripe {
+    width: 3px; height: 36px; border-radius: 2px; flex-shrink: 0;
+  }
+  .part-stripe.c { background: linear-gradient(to bottom, var(--cherry), rgba(139,26,42,0.2)); }
+  .part-stripe.r { background: linear-gradient(to bottom, var(--royal),  rgba(30,61,139,0.2)); }
+  .part-stripe.f { background: linear-gradient(to bottom, var(--forest), rgba(30,74,46,0.2)); }
+
+  .part-title {
+    font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:400;
+    color:var(--ivory); letter-spacing:.02em;
+  }
+
+  .part-body {
+    font-size:1.02rem; line-height:1.95; color:var(--ivory-mid);
+    white-space: pre-line;
+    padding-left: 19px;
+    border-left: 1px solid var(--ivory-ghost);
+  }
+
+  /* Annotations zone per part */
+  .anno-zone {
+    margin-top: 24px;
+    padding-left: 19px;
+  }
+
+  .anno-toggle-inline {
+    font-size: 10px; letter-spacing:.15em; text-transform:uppercase;
+    color: var(--ivory-low); background:none; border:1px solid var(--ivory-ghost);
+    border-radius: 3px; padding: 4px 12px; cursor:pointer; transition: all .2s;
+    margin-bottom: 12px;
+  }
+  .anno-toggle-inline:hover { color:var(--ivory-mid); border-color:var(--ivory-low); }
+
+  .anno-list { display:flex; flex-direction:column; gap:10px; }
+  .anno-list.hidden { display:none; }
+
+  /* Post-it sticker */
+  .postit {
+    display: inline-flex; align-items:flex-start; gap:10px;
+    background: var(--ivory-ghost); border:1px solid var(--ivory-low);
+    border-radius:6px; padding:12px 16px; max-width:100%;
+    animation: popin .25s ease;
+    position: relative;
+  }
+  @keyframes popin { from{opacity:0;transform:scale(.95)} to{opacity:1;transform:scale(1)} }
+
+  .postit-accent { width:3px; border-radius:2px; align-self:stretch; flex-shrink:0; min-height:32px; }
+  .postit-accent.c { background:var(--cherry); }
+  .postit-accent.r { background:var(--royal); }
+  .postit-accent.f { background:var(--forest); }
+
+  .postit-body { flex:1; min-width:0; }
+  .postit-author { font-size:9px; letter-spacing:.15em; text-transform:uppercase; color:var(--ivory-low); margin-bottom:5px; }
+  .postit-text { font-family:'Cormorant Garamond',serif; font-size:1rem; line-height:1.6; color:var(--ivory-mid); font-style:italic; word-break:break-word; }
+  .postit-img { max-width:180px; max-height:120px; border-radius:4px; margin-top:6px; display:block; }
+  .postit-emoji { font-size:1.4rem; margin-top:4px; }
+
+  /* ── FLOATING TOGGLE BUTTON ── */
+  #float-toggle {
+    position: fixed; bottom: 28px; right: 28px; z-index: 400;
+    background: rgba(12,8,8,0.85); border:1px solid var(--ivory-low);
+    color: var(--ivory-mid); border-radius: 99px;
+    padding: 9px 18px; font-size:11px; letter-spacing:.15em; text-transform:uppercase;
+    cursor:pointer; backdrop-filter:blur(12px); transition: all .2s;
+    display:flex; align-items:center; gap:8px;
+  }
+  #float-toggle:hover { border-color:var(--ivory-mid); color:var(--ivory); }
+  #float-toggle .ft-dot { width:7px; height:7px; border-radius:50%; background:var(--cherry); flex-shrink:0; }
+
+  /* ── CONTRIBUTION SECTION ── */
+  .contributions {
+    background: var(--bg-green);
+    border-top: 1px solid var(--ivory-ghost);
+    padding: 100px 48px;
+  }
+  .contrib-inner { max-width: 780px; margin: 0 auto; }
+
+  .section-eyebrow { font-size:10px; letter-spacing:.3em; text-transform:uppercase; color:#4a9464; margin-bottom:16px; }
+  .section-h2 {
+    font-family:'Cormorant Garamond',serif; font-size:clamp(2.2rem,5vw,3.8rem);
+    font-weight:300; line-height:1.05; margin-bottom:16px; color:var(--ivory);
+  }
+  .section-h2 em { font-style:italic; color:var(--ivory-mid); }
+  .section-sub { font-size:.9rem; color:var(--ivory-mid); margin-bottom:48px; line-height:1.6; }
+
+  /* Part selector */
+  .part-selector-label { font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--ivory-low); margin-bottom:10px; }
+  .part-selector {
+    width:100%; background:var(--ivory-ghost); border:1px solid var(--ivory-low);
+    border-radius:6px; color:var(--ivory); font-family:'DM Sans',sans-serif; font-size:.9rem;
+    padding:10px 14px; outline:none; margin-bottom:24px; cursor:pointer;
+    appearance:none;
+  }
+  .part-selector:focus { border-color:rgba(139,26,42,.5); }
+
+  /* Tabs */
+  .tabs { display:flex; gap:8px; margin-bottom:24px; flex-wrap:wrap; }
+  .tab {
+    padding:8px 18px; border-radius:4px; border:1px solid var(--ivory-low);
+    font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--ivory-mid); cursor:pointer; transition:all .2s; font-weight:400;
+  }
+  .tab:hover { border-color:var(--ivory-mid); color:var(--ivory); }
+  .tab.c-active { border-color:var(--cherry); color:#c94a5a; background:var(--cherry-s); }
+  .tab.r-active { border-color:var(--royal);  color:#4a72d4; background:var(--royal-s); }
+  .tab.f-active { border-color:var(--forest); color:#4a9464; background:var(--forest-s); }
+
+  /* Input panels */
+  #tab-message, #tab-dessin, #tab-photo, #tab-reaction { display:none; }
+  #tab-message.active, #tab-dessin.active, #tab-photo.active, #tab-reaction.active { display:block; }
+  #tab-dessin.active { display:flex; flex-direction:column; gap:12px; }
+  #tab-reaction.active { display:flex; flex-wrap:wrap; gap:10px; }
+
+  textarea {
+    width:100%; background:var(--ivory-ghost); border:1px solid var(--ivory-low);
+    border-radius:6px; color:var(--ivory); font-family:'Cormorant Garamond',serif;
+    font-size:1.1rem; line-height:1.75; padding:18px 20px; resize:none; height:120px;
+    outline:none; transition:border-color .2s;
+  }
+  textarea:focus { border-color:rgba(139,26,42,.5); }
+  textarea::placeholder { color:var(--ivory-low); font-style:italic; }
+
+  .send-btn {
+    margin-top:12px; padding:10px 28px; background:var(--cherry); border:none;
+    border-radius:4px; color:var(--ivory); font-family:'DM Sans',sans-serif;
+    font-size:11px; letter-spacing:.18em; text-transform:uppercase; font-weight:500;
+    cursor:pointer; transition:opacity .2s;
+  }
+  .send-btn:hover { opacity:.8; }
+
+  /* Canvas */
+  canvas {
+    background:var(--ivory-ghost); border:1px solid var(--ivory-low);
+    border-radius:6px; cursor:crosshair; touch-action:none; width:100%; height:200px;
+  }
+  .canvas-tools { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .color-dot { width:22px; height:22px; border-radius:50%; cursor:pointer; border:2px solid transparent; transition:border-color .15s; }
+  .color-dot.selected { border-color:var(--ivory); }
+  .clear-btn {
+    font-size:10px; letter-spacing:.15em; text-transform:uppercase; color:var(--ivory-mid);
+    background:none; border:1px solid var(--ivory-low); border-radius:3px; padding:4px 12px;
+    cursor:pointer; margin-left:auto;
+  }
+
+  /* Photo */
+  .photo-label {
+    display:flex; align-items:center; gap:16px; padding:24px;
+    background:var(--ivory-ghost); border:1px dashed var(--ivory-low);
+    border-radius:6px; cursor:pointer; color:var(--ivory-mid); font-size:.9rem;
+  }
+  .photo-label span:first-child { font-size:2rem; }
+
+  /* Emoji */
+  .emoji-btn {
+    font-size:1.8rem; background:var(--ivory-ghost); border:1px solid var(--ivory-low);
+    border-radius:8px; padding:10px 14px; cursor:pointer; transition:background .15s;
+  }
+  .emoji-btn:hover { background:var(--cherry-s); }
+  .emoji-btn.picked { background:var(--cherry-s); border-color:var(--cherry); }
+
+  /* Footer */
+  footer {
+    padding:32px 48px; display:flex; justify-content:space-between; align-items:center;
+    border-top:1px solid var(--ivory-ghost); background:var(--bg);
+  }
+  .footer-text { font-size:10px; letter-spacing:.15em; color:var(--ivory-low); text-transform:uppercase; }
+  .footer-colors { display:flex; gap:6px; }
+  .fc { width:8px; height:8px; border-radius:50%; }
+
+  @media(max-width:640px){
+    nav { padding:14px 20px; }
+    .hero { padding:0 20px 64px; }
+    .letter { padding:80px 20px 60px; }
+    .part-body { padding-left:12px; }
+    .anno-zone { padding-left:12px; }
+    .contributions { padding:72px 20px; }
+    footer { padding:24px 20px; flex-direction:column; gap:12px; align-items:flex-start; }
+    #float-toggle { bottom:16px; right:16px; padding:8px 14px; font-size:10px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-name">Mémoire digitale</span>
+  <span class="nav-pill">Permanent · Non modifiable</span>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-rule"></div>
+  <p class="hero-eyebrow">Un espace permanent</p>
+  <h1>Léo Mallet.</h1>
+  <div class="hero-meta">
+    <span class="hero-meta-item">Écrit une fois</span>
+    <div class="hero-meta-dot"></div>
+    <span class="hero-meta-item">Ouvert à jamais</span>
+
+  </div>
+  <span class="scroll-hint">Lire ↓</span>
+</section>
+
+<!-- LETTRE -->
+<section class="letter">
+
+  <p class="letter-intro">Bon, on y est...<br><br>Si vous lisez ça, je suis désolé. Je ne sais pas si j'aurai eu le courage de vous l'envoyer ou si vous le lirez directement dans mes notes, mais bon, je me lance.<br><br>On est le 23 juin 2026 et, après des années de réflexion, j'ai réalisé ma première action concrète, certes discrète, mais pas des moindres : j'ai gravé la date de ma mort sur le calendrier de mon entreprise. Dit comme ça, je sais que c'est plutôt flou, mais pour mieux comprendre, je vais vous parler et vous expliquer beaucoup de choses.<br><br>Rien n'aura vraiment d'ordre. Ce n'est pas plus marrant de lire seulement ce qu'on veut ?<br><br>Alors je vais faire des « parties » sur différents thèmes de ma vie, car tout mérite d'être raconté et je ne veux pas vous laisser dans l'incompréhension. Haha, je parle beaucoup. C'est un peu drôle de vous faire perdre votre temps sachant que je n'en ai plus...<br><br>Pour poser le contexte de ma gravure sur le calendrier, c'est parce que je suis en stage en entreprise, dans un bureau (à ce moment-là), et finalement quoi de mieux que d'imaginer les chiffres s'aligner sur une tombe ? J'ai gravé légèrement cette inscription : « 20-07-2027 ».<br><br>J'ai, en quelque sorte, gravé ma tombe. La surface était blanche. J'espère que ma pierre sera cool. Je ne sais pas si le blanc c'est cool, mais en tout cas les bancs c'est cool. Alors j'espère qu'il y aura un banc pour venir me voir si un jour vous passez dans le coin (ça vous fera moins mal au dos de vous asseoir).<br><br>Pour tout vous dire, ça fait peut-être un ou deux ans que je pense vraiment, viscéralement, à me donner la mort. J'ai beau avoir tenté de me brouiller le cerveau à coups de souvenirs, rien n'y fait. Je me lève et je m'entends dire que j'ai envie de crever. Je me couche et je m'entends penser que j'ai envie d'être enterré.<br><br>Comme tout ça est plus ou moins secret, je vais vous faire plein de parties sur ma vie en espérant que vous y trouverez vos réponses. ;)<br>Et d'ailleurs, vous vous êtes amusés ? À participer à mon plus grand puzzle ? Plusieurs d'entre vous savent des choses sur moi, mais personne ne connaît vraiment tout. C'est aussi pour ça que je vais tout vous dire.<br><br>(Ouaaah, tu parles trop gros, balance tout.)</p>
+
+  <div id="parts-container"></div>
+
+</section>
+
+<!-- CONTRIBUTIONS -->
+<section class="contributions">
+  <div class="contrib-inner">
+    <p class="section-eyebrow">Espace des visiteurs</p>
+    <h2 class="section-h2">Laisse quelque chose<br><em>pour lui</em></h2>
+    <p class="section-sub">Un mot, un dessin, une photo — déposé sur la partie qui t'a touché.</p>
+
+    <p class="part-selector-label">Sur quelle partie ?</p>
+    <select class="part-selector" id="part-select"></select>
+
+    <div class="tabs">
+      <div class="tab c-active" onclick="switchTab('message',this)">💬 Message</div>
+      <div class="tab" onclick="switchTab('dessin',this)">✏️ Dessin</div>
+      <div class="tab" onclick="switchTab('photo',this)">🖼 Photo</div>
+      <div class="tab" onclick="switchTab('reaction',this)">❤️ Réaction</div>
+    </div>
+
+    <!-- Message -->
+    <div id="tab-message" class="active">
+      <textarea id="msg-input" placeholder="Écris ce que tu veux laisser ici…"></textarea>
+      <button class="send-btn" onclick="submitMessage()">Déposer →</button>
+    </div>
+
+    <!-- Dessin -->
+    <div id="tab-dessin">
+      <canvas id="drawing-canvas" width="800" height="200"></canvas>
+      <div class="canvas-tools">
+        <div class="color-dot selected" style="background:#e8ddd0" onclick="setColor('#e8ddd0',this)"></div>
+        <div class="color-dot" style="background:#8b1a2a" onclick="setColor('#8b1a2a',this)"></div>
+        <div class="color-dot" style="background:#4a72d4" onclick="setColor('#4a72d4',this)"></div>
+        <div class="color-dot" style="background:#4a9464" onclick="setColor('#4a9464',this)"></div>
+        <div class="color-dot" style="background:#c9922a" onclick="setColor('#c9922a',this)"></div>
+        <button class="clear-btn" onclick="clearCanvas()">Effacer</button>
+      </div>
+      <button class="send-btn" onclick="submitDrawing()">Déposer le dessin →</button>
+    </div>
+
+    <!-- Photo -->
+    <div id="tab-photo">
+      <label class="photo-label">
+        <span>🖼</span>
+        <span>Clique pour choisir une photo</span>
+        <input type="file" accept="image/*" style="display:none" onchange="previewPhoto(event)">
+      </label>
+      <div id="photo-preview" style="margin-top:12px"></div>
+      <button class="send-btn" onclick="submitPhoto()">Déposer la photo →</button>
+    </div>
+
+    <!-- Réaction -->
+    <div id="tab-reaction">
+      <div class="emoji-btn" onclick="pickEmoji(this)">🕯️</div>
+      <div class="emoji-btn" onclick="pickEmoji(this)">🌹</div>
+      <div class="emoji-btn" onclick="pickEmoji(this)">💙</div>
+      <div class="emoji-btn" onclick="pickEmoji(this)">🌿</div>
+      <div class="emoji-btn" onclick="pickEmoji(this)">⭐</div>
+      <div class="emoji-btn" onclick="pickEmoji(this)">🕊️</div>
+      <div class="emoji-btn" onclick="pickEmoji(this)">❤️</div>
+      <div class="emoji-btn" onclick="pickEmoji(this)">🙏</div>
+      <div class="emoji-btn" onclick="pickEmoji(this)">✨</div>
+      <div style="width:100%;margin-top:8px">
+        <button class="send-btn" onclick="submitEmoji()">Déposer →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FLOATING TOGGLE -->
+<button id="float-toggle" onclick="toggleAnnotations()">
+  <span class="ft-dot"></span>
+  <span id="ft-label">Cacher les annotations</span>
+</button>
+
+<footer>
+  <span class="footer-text">Ce site ne sera jamais modifié. Il existera aussi longtemps qu'il le peut.</span>
+  <div class="footer-colors">
+    <div class="fc" style="background:var(--cherry)"></div>
+    <div class="fc" style="background:var(--royal)"></div>
+    <div class="fc" style="background:var(--forest)"></div>
+  </div>
+</footer>
+
+<script>
+// ── DATA ──
+const parts = [
+  { id:'enfance',   title:'Mon enfance',   stripe:'c',
+    body:`J'ai eu une enfance comme beaucoup de personnes de ma génération, à part qu'on vivait dans un petit village. On n'avait pas grand-chose à faire à part traîner aux city.\nMais le plus important, c'est que j'avais mon frère de cœur Antonin, qui m'a suivi jusque-là. Je t'aime, mec. T'es vraiment un type en or.\nMdr, elle est nulle cette partie, mais au moins je te la dédie, Anto.` },
+  { id:'parents',   title:'Papa et Maman', stripe:'r',
+    body:`Ça fait longtemps que je ne vous ai pas appelés ainsi, et pour cause : j'ai décroché ultra rapidement de l'amour parental pour des raisons qui m'échappent.\nJe sais que pour beaucoup je vais sembler crue, mais bon, je ne pourrai pas être plus frais que là où je vais de toute façon, alors autant tout dire.\nPour commencer, mon souvenir le plus lointain remonte à quand je faisais volontairement pleurer ma maman en lui répétant que c'était une mauvaise mère et que je ne l'aimais pas.\nBordel que j'étais con.\nPutain, je t'aime ma maman. Même si je pleure en écrivant et que ma gorge se serre, même si je ne te le dis plus, je t'aime sincèrement.\nEt ne te sens pas exclu, papa. Même si tu as été moins présent que maman à cause de ton travail et de mon rejet de votre amour. Même si notre relation est presque uniquement basée autour de l'argent, je t'aime toi aussi tellement fort, mon papa.\nEt putain de merde, je suis désolé que ça tombe sur des parents aussi formidables que vous. Je suis désolé d'être un fils aussi horrible, aussi minable, aussi honteux. Je suis désolé d'être cet échec. J'espère que vous me pardonnerez.\nJe vous aime.\nMa relation avec vous n'a jamais été une grande histoire. On s'embrouille souvent, pour ne pas dire tout le temps. Je m'enferme tous les jours et je ne fais plus rien avec vous.\nÇa doit sûrement être l'adolescence, hein ?\nHaha...\nHein ?...\nMa relation est conflictuelle avec mes parents, mais la réalité c'est que c'est pire que ça. Je n'arrive plus à ne pas être mal à l'aise après des compliments ou des encouragements.\nJ'ai été habitué à être poussé vers la réussite, à faire toujours plus de choses, à tout découvrir et à tout goûter.\nEt bon... ce ne serait pas marrant si je ne faisais pas exactement l'inverse.` },
+  { id:'faible',    title:'Faible',        stripe:'f',
+    body:`No way, le plot twist trop ringard du mec qui fait des blagues est en réalité faible ? Qui l'aurait cru ?\nJe rigole bien sûr.\nMais c'est juste que je suis ce qu'on appelle une petite nature, un hypersensible. Je pleure pour rien, quasiment tous les jours, seul dans le noir.\nOui, j'interprète des choses. Et parfois je les interprète mal, ou très mal. Je m'en excuse. Ce n'est pas vous, c'est moi.\nJe ne vais jamais dire quand ça ne va pas.\nPourquoi ?\nParce que je ne veux pas qu'on ait de la pitié pour moi. Ironiquement, je hais avoir l'attention même si j'adore l'attirer. C'est tellement con.\nJe vous envie, les personnes qui arrivent à se confier.\nJ'ai toujours eu moult complexes, de la tête aux pieds, et je vais vous les énumérer pour que vous vous en rendiez compte : j'ai un pied plus grand que l'autre avec une énorme cicatrice suite à une opération pour une exostose (un os en plus qui pousse de manière aléatoire), mes mollets trop fins, mes cuisses trop grosses, mon dos trop grand avec une scoliose, mes bras trop maigres, mes doigts boudinés et rongés comme des râteaux, mon cou trop long, ma tête ovale et allongée, mes yeux décalés, ma bouche trop grosse, mes dents cariées et mal alignées, mon profil, mes golfes creusés et, pour finir, mes cheveux désordonnés.\nC'est relou de tout lire, courage à vous. J'aurais déjà décroché, je raconte trop ma vie.` },
+  { id:'friends',   title:'Friends',       stripe:'c',
+    body:`Oui, c'était plus stylé en anglais, ne faites pas attention au titre.\nBref, tout comme mes parents, je vous aime énormément. Merci du plus profond de mon cœur à tous.\nJe ne veux pas faire de liste pour ne pas mettre des gens au-dessus des autres et pour ne pas en oublier certains.\nMais sachez tous que je vous aime.\nVous m'avez tellement aidé sans même le savoir. Certains soirs, je venais parler ou jouer alors que je pleurais trente minutes avant.\nVous m'avez tous aidé à m'en sortir pendant un moment. Malheureusement, avec mon silence, c'est difficile d'aider davantage.\nEn tout cas, ne changez jamais. Vous êtes les meilleurs.` },
+  { id:'papyMamie', title:'Papy et Mamie', stripe:'r',
+    body:`Vous êtes sûrement mes personnes préférées.\nJe vous en ai fait voir de toutes les couleurs, mais vous m'avez montré les couleurs de la vie.\nMerci de m'avoir appris tant de choses, de m'avoir tant enseigné et d'avoir été là pour moi.\nJe suis désolé de partir si soudainement. J'espère que malgré ça je ne vous fais pas de peine.` },
+  { id:'vraiment',  title:'Vraiment ?',    stripe:'f',
+    body:`Oui.\nAu cours des années, j'ai délibérément perdu toute envie et toute motivation dans tout.\nC'est épuisant de faire semblant.\nHeureusement, j'ai de rares moments de joie sincère, mais plus le temps passe, plus les moments de haut diminuent et plus les moments de bas augmentent.\nJe ne veux pas vivre dans un monde qui nous rend aussi prisonniers de nous-mêmes.\nJe refuse d'être un acteur d'une société que je ne cautionne pas.\nAlors plutôt que de vivre ce calvaire, je vais partir sous terre.` },
+  { id:'moi',       title:'Moi ?',         stripe:'c',
+    body:`Lol, encore de la mégalomanie ratée ?\nNan.\nJe vais juste vous en dire plus sur moi, tout en espérant vous avoir appris des choses au cours de ma vie.\nJe suis un grand garçon d'1m82 avec les cheveux bouclés et des lunettes.\nJ'aime la nature dans son intégralité : les fleurs et les plantes (c'est ma mamie qui me l'a transmis), les animaux et tous les êtres vivants comme les insectes. (c'est mes parents qui me l'ont transmis)\nJ'aime aussi la galaxie. Ça, c'est un peu tout le monde qui m'en parle avec des étoiles dans les yeux. Vous avez capté le jeu de mot ? Hehe.\nEt pour finir, les dinosaures : ma petite touche personnelle, alimentée par mon papa qui m'a montré « Sur la terre des dinosaures » de 1999.\nD'ailleurs, il m'a racheté le coffret avec tous les épisodes en 2025.\nJe t'aime papa, merci beaucoup, même si je ne te l'ai pas dit.\nJ'aime aussi beaucoup la mode grâce à mes rencontres du collège et à mon harcèlement à cause de mes tenues.\nHum hum...\nJ'avais le surnom « Léo le clodo ».\nBon, j'espère qu'entre-temps j'aurai réussi à mieux m'habiller.\nLa mode, tout comme l'art, me passionne. J'adore toutes les formes d'art : les vêtements, les peintures, l'expérimental, les concepts et bien plus encore.\nJ'aime aussi l'automobile grâce à Maël. Le voir m'en parler avec les yeux brûlants de passion m'obligeait à tout retenir.\nJ'aime aussi la moto. Ça, c'est moi pour le coup, j'ai côtoyé pas mal de motards dans la famille et parmi les amis de la famille.\nInutile de vous dire que l'informatique ou la musique m'attirent, c'est visible à des kilomètres.\nEt bah... je n'ai plus rien à dire, je crois.\nEnfin.` },
+  { id:'fin',       title:'Fin',           stripe:'r',
+    body:`Et pour mon dernier tour de magie, je vais faire croire à un accident !\nJ'avais pensé à un accident de moto. L'idée de mon sang qui perlait sur le décor me faisait frissonner.\nMais finalement, je ne trouve pas ça cool pour les autres : autant pour ceux qui vont le voir que pour ceux qui vont me ramasser.\nAlors je vais mettre fin à mes jours en prenant quelque chose de létal.\nUn peu comme Bear dans Obsession, vous avez la ref ?` },
+  { id:'encore',    title:'Encore un ?',   stripe:'f',
+    body:`Je voulais m'excuser une dernière fois pour tout.\nCe n'est pas correct de partir ainsi, surtout qu'on a vécu une aventure formidable tous ensemble. Je ne vous demande pas d'être triste, d'avoir des regrets ou des remorts je vous demande simplement d'être heureux pour l'éternité.\nJe vous aime. <3\nAdieu.` },
+];
+
+// annotations store: { partId: [ {type, author, time, text, img, emoji, accent} ] }
+const annotations = {};
+parts.forEach(p => annotations[p.id] = []);
+
+let annotationsVisible = true;
+const accentCycle = ['c','r','f'];
+let accentIdx = 0;
+
+// ── BUILD PARTS ──
+const container = document.getElementById('parts-container');
+const selector  = document.getElementById('part-select');
+
+parts.forEach(p => {
+  // Build part DOM
+  const div = document.createElement('div');
+  div.className = 'part';
+  div.id = 'part-' + p.id;
+  div.innerHTML = `
+    <div class="part-header">
+      <div class="part-stripe ${p.stripe}"></div>
+      <h2 class="part-title">— ${p.title} —</h2>
+    </div>
+    <div class="part-body">${p.body.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+    <div class="anno-zone" id="anno-zone-${p.id}">
+      <button class="anno-toggle-inline" onclick="togglePartAnnotations('${p.id}', this)">
+        Voir les annotations (0)
+      </button>
+      <div class="anno-list hidden" id="anno-list-${p.id}"></div>
+    </div>`;
+  container.appendChild(div);
+
+  // Build selector option
+  const opt = document.createElement('option');
+  opt.value = p.id;
+  opt.textContent = '— ' + p.title + ' —';
+  selector.appendChild(opt);
+});
+
+// ── TOGGLE PART ANNOTATIONS ──
+function togglePartAnnotations(id, btn) {
+  const list = document.getElementById('anno-list-' + id);
+  const isHidden = list.classList.contains('hidden');
+  list.classList.toggle('hidden', !isHidden);
+  const count = annotations[id].length;
+  btn.textContent = isHidden
+    ? `Cacher les annotations (${count})`
+    : `Voir les annotations (${count})`;
+}
+
+function updatePartBtn(id) {
+  const count = annotations[id].length;
+  const zone = document.getElementById('anno-zone-' + id);
+  const btn = zone.querySelector('.anno-toggle-inline');
+  const list = document.getElementById('anno-list-' + id);
+  const open = !list.classList.contains('hidden');
+  btn.textContent = open
+    ? `Cacher les annotations (${count})`
+    : `Voir les annotations (${count})`;
+}
+
+// ── GLOBAL TOGGLE ──
+function toggleAnnotations() {
+  annotationsVisible = !annotationsVisible;
+  document.getElementById('ft-label').textContent = annotationsVisible ? 'Cacher les annotations' : 'Afficher les annotations';
+  document.querySelectorAll('.anno-zone').forEach(z => {
+    z.style.display = annotationsVisible ? '' : 'none';
+  });
+}
+
+// ── ADD ANNOTATION ──
+function addAnnotation(partId, data) {
+  annotations[partId].push(data);
+  const list = document.getElementById('anno-list-' + partId);
+  const item = document.createElement('div');
+  item.className = 'postit';
+  let inner = `<div class="postit-accent ${data.accent}"></div><div class="postit-body">
+    <p class="postit-author">${data.author} · ${data.time}</p>`;
+  if (data.text) inner += `<p class="postit-text">${data.text}</p>`;
+  if (data.img)  inner += `<img class="postit-img" src="${data.img}">`;
+  if (data.emoji) inner += `<p class="postit-emoji">${data.emoji}</p>`;
+  inner += `</div>`;
+  item.innerHTML = inner;
+  list.appendChild(item);
+  // Auto-open the list
+  list.classList.remove('hidden');
+  updatePartBtn(partId);
+}
+
+// ── SUBMIT MESSAGE ──
+function submitMessage() {
+  const val = document.getElementById('msg-input').value.trim();
+  if (!val) return;
+  const pid = document.getElementById('part-select').value;
+  addAnnotation(pid, { author:'Anonyme', time:'à l\'instant', text: escHtml(val), accent: accentCycle[accentIdx++ % 3] });
+  document.getElementById('msg-input').value = '';
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── TABS ──
+function switchTab(name, el) {
+  ['message','dessin','photo','reaction'].forEach(t => {
+    const el = document.getElementById('tab-'+t);
+    el.classList.remove('active');
+  });
+  document.getElementById('tab-'+name).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('c-active','r-active','f-active'));
+  const cm = {message:'c-active',dessin:'r-active',photo:'f-active',reaction:'c-active'};
+  el.classList.add(cm[name]);
+  if (name === 'dessin') initCanvas();
+}
+
+// ── CANVAS ──
+let drawing=false, ctx=null, currentColor='#e8ddd0';
+
+function initCanvas() {
+  const canvas = document.getElementById('drawing-canvas');
+  if (canvas._init) return;
+  canvas._init = true;
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.offsetWidth; const h = 200;
+  canvas.width = w * dpr; canvas.height = h * dpr;
+  canvas.style.height = h + 'px';
+  ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  ctx.strokeStyle = currentColor; ctx.lineWidth = 2.5;
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+
+  const pos = e => {
+    const r = canvas.getBoundingClientRect();
+    const s = e.touches ? e.touches[0] : e;
+    return { x: s.clientX - r.left, y: s.clientY - r.top };
+  };
+  canvas.addEventListener('mousedown', e => { drawing=true; ctx.beginPath(); const p=pos(e); ctx.moveTo(p.x,p.y); });
+  canvas.addEventListener('mousemove', e => { if(!drawing) return; const p=pos(e); ctx.lineTo(p.x,p.y); ctx.stroke(); });
+  canvas.addEventListener('mouseup', () => drawing=false);
+  canvas.addEventListener('mouseleave', () => drawing=false);
+  canvas.addEventListener('touchstart', e => { e.preventDefault(); drawing=true; ctx.beginPath(); const p=pos(e); ctx.moveTo(p.x,p.y); },{passive:false});
+  canvas.addEventListener('touchmove', e => { e.preventDefault(); if(!drawing) return; const p=pos(e); ctx.lineTo(p.x,p.y); ctx.stroke(); },{passive:false});
+  canvas.addEventListener('touchend', () => drawing=false);
+}
+
+function setColor(c, el) {
+  currentColor = c;
+  if (ctx) ctx.strokeStyle = c;
+  document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function clearCanvas() {
+  if (ctx) { const c=document.getElementById('drawing-canvas'); ctx.clearRect(0,0,c.width,c.height); }
+}
+
+function submitDrawing() {
+  const canvas = document.getElementById('drawing-canvas');
+  const img = canvas.toDataURL();
+  const pid = document.getElementById('part-select').value;
+  addAnnotation(pid, { author:'Anonyme', time:'à l\'instant', img, accent: accentCycle[accentIdx++ % 3] });
+  clearCanvas();
+}
+
+// ── PHOTO ──
+let photoData = null;
+function previewPhoto(e) {
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    photoData = ev.target.result;
+    document.getElementById('photo-preview').innerHTML =
+      `<img src="${photoData}" style="max-width:100%;max-height:200px;border-radius:6px;border:1px solid var(--ivory-low);margin-top:8px">`;
+  };
+  reader.readAsDataURL(file);
+}
+function submitPhoto() {
+  if (!photoData) return;
+  const pid = document.getElementById('part-select').value;
+  addAnnotation(pid, { author:'Anonyme', time:'à l\'instant', img: photoData, accent: accentCycle[accentIdx++ % 3] });
+  document.getElementById('photo-preview').innerHTML = '';
+  photoData = null;
+}
+
+// ── EMOJI ──
+let pickedEmoji = null;
+function pickEmoji(el) {
+  document.querySelectorAll('.emoji-btn').forEach(e => e.classList.remove('picked'));
+  el.classList.add('picked');
+  pickedEmoji = el.textContent;
+}
+function submitEmoji() {
+  if (!pickedEmoji) return;
+  const pid = document.getElementById('part-select').value;
+  addAnnotation(pid, { author:'Anonyme', time:'à l\'instant', emoji: pickedEmoji, accent: accentCycle[accentIdx++ % 3] });
+  pickedEmoji = null;
+  document.querySelectorAll('.emoji-btn').forEach(e => e.classList.remove('picked'));
+}
+</script>
+</body>
+</html>
